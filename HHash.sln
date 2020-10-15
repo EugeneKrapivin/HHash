@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30309.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HHash", "HHash\HHash.csproj", "{EBBABEB9-E5EC-4320-9E41-B12B8745847A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HHash", "HHash\HHash.csproj", "{EBBABEB9-E5EC-4320-9E41-B12B8745847A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HHasher.Tests", "HHasher.Tests\HHasher.Tests.csproj", "{EB9DE353-D324-456D-8116-1BB886392748}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HHash.Tests", "HHash.Tests\HHash.Tests.csproj", "{EB9DE353-D324-456D-8116-1BB886392748}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

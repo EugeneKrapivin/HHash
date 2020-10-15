@@ -1,15 +1,13 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using HHash;
 using NUnit.Framework;
-using HHasher;
-using NUnit.Framework.Interfaces;
 
-namespace HHasher.Tests
+using MoreLinq;
+
+namespace HHash.Tests
 {
+    [Parallelizable(ParallelScope.All)]
     public class PropertyTests
     {
         public static IEnumerable<string[]> CreationTestCases
@@ -37,7 +35,22 @@ namespace HHasher.Tests
             }
         }
 
-        [TestCaseSource(nameof(CreationTestCases))]
+        public static IEnumerable<TestCaseData> PathOrderingSensitivityCases
+        {
+            get
+            {
+                var basePath = new[] {"this", "is", "a", "long", "path"};
+
+                var permutations = basePath.Permutations().Where(x => !x.SequenceEqual(basePath));
+
+                foreach (var permutation in permutations)
+                {
+                    yield return new TestCaseData(basePath, permutation);
+                }
+            }
+        }
+
+        [TestCaseSource(nameof(CreationTestCases)), Category("property")]
         public void Created_Id_Should_Be_Valid_Base64(string[] path)
         {
             var sut = new Hasher();
@@ -50,7 +63,7 @@ namespace HHasher.Tests
             Assert.That(decodedId, Is.Not.Empty);
         }
 
-        [TestCaseSource(nameof(CreationTestCases))]
+        [TestCaseSource(nameof(CreationTestCases)), Category("property")]
         public void Created_Id_Should_Be_Verifiable_For_Same_Path(string[] path)
         {
             var sut = new Hasher();
@@ -60,7 +73,7 @@ namespace HHasher.Tests
             Assert.That(sut.ValidateId(id, path), Is.True);
         }
 
-        [TestCaseSource(nameof(PathCaseSensitivityCases))]
+        [TestCaseSource(nameof(PathCaseSensitivityCases)), Category("property")]
         public void Created_Id_Should_Be_Case_Sensitive(string[] path)
         {
             var sut = new Hasher();
@@ -70,45 +83,23 @@ namespace HHasher.Tests
             Assert.That(sut.ValidateId(id, path), Is.False);
         }
 
-        [TestCaseSource(nameof(CreationTestCases))]
-        public void Created_Id_Should_Be_Not_Be_Verifiable_For_Different_Path(string[] path)
+        [TestCaseSource(nameof(CreationTestCases)), Category("property")]
+        public void Created_Id_Should_Not_Be_Verifiable_For_Different_Path(string[] path)
         {
             var sut = new Hasher();
 
             var id = sut.CreateId("path");
-
+            Console.WriteLine($"this key should be valid for path `[\"hello'\", \"world\"]` {sut.ValidateId(id, "hello", "world")}");
             Assert.That(sut.ValidateId(id, path), Is.False);
         }
 
-        [TestCase(100)]
-        [TestCase(10_000)]
-        [TestCase(100_000)]
-        [TestCase(1_000_000)]
-        [TestCase(10_000_000, Explicit = true), Category("long running")]
-        [TestCase(20_000_000, Explicit = true), Category("long running")]
-        [TestCase(40_000_000, Explicit = true), Category("long running")]
-        [TestCase(100_000_000, Explicit = true), Category("long running")]
-        public void Created_Id_Should_Be_Unique_With_High_Probability(int limit)
+        [TestCaseSource(nameof(PathOrderingSensitivityCases)), Category("property")]
+        public void Created_Id_Should_Be_Sensitive_To_Path_Order(string [] originalPath, string[] permutation)
         {
-            var dict = new ConcurrentDictionary<string, int>();
             var sut = new Hasher();
+            var id = sut.CreateId(originalPath);
 
-            Parallel.For(0, limit + 1, new ParallelOptions{ MaxDegreeOfParallelism = 8 }, i =>
-            {
-                var key = sut.CreateId("hello", "world");
-                
-                dict.AddOrUpdate(key, 1, (k, v) => v + 1);
-            });
-
-            var foundDuplicate = dict.Any(x => x.Value > 1);
-
-            Assert.That(foundDuplicate, Is.False, 
-                () => $"Found {dict.Count(x => x.Value > 1)} duplicate keys\r\n: {string.Join("\r\n\t", getDuplicateKeysOutput(dict))}");
-            
-            // TODO: dump whole dictionary
-
-            IEnumerable<string> getDuplicateKeysOutput(ConcurrentDictionary<string, int> keys) 
-                => keys.Where(x => x.Value > 2).OrderByDescending(x => x.Value).Select(x => $"{x.Key} => {x.Value}");
+            Assert.That(sut.ValidateId(id, permutation), Is.False, () => $"Failed Id validation for path {originalPath} against {permutation}");
         }
     }
 }
