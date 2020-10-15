@@ -72,51 +72,5 @@ namespace HHash
                         return concat;
                     });
         }
-
-        //public static void Main()
-        //{
-        //	var path = new[] { "test" };
-        //	var id = CreateId(path);
-        //	Console.WriteLine($"Generated {id} with path '{string.Join(",", path)}'");
-
-        //	Console.WriteLine($"Validating with path '{string.Join(",", path)}'");
-        //	Console.WriteLine($"result: {(ValidateId(id, path) ? "valid" : "invalid")}");
-
-        //	var badPath = new[] { "test1" };
-        //	Console.WriteLine($"Validating with path '{string.Join(",", badPath)}'");
-        //	Console.WriteLine($"result: {(ValidateId(id, badPath) ? "valid" : "invalid")}");
-
-        //	badPath = new[] { "test", "test" };
-        //	Console.WriteLine($"Validating with path '{string.Join(",", badPath)}'");
-        //	Console.WriteLine($"result: {(ValidateId(id, badPath) ? "valid" : "invalid")}");
-
-        //	badPath = new string[0];
-        //	Console.WriteLine($"Validating with path '{string.Join(",", badPath)}'");
-        //	Console.WriteLine($"result: {(ValidateId(id, badPath) ? "valid" : "invalid")}");
-
-        //	Console.WriteLine("Running 20,000,000 generations to find duplicates");
-        //	var dict = new Dictionary<string, int>();
-
-        //	for (int i = 0; i < 20_000_000; i++)
-        //	{
-        //		var key = CreateId("hello", "world");
-        //		//key.Dump();
-        //		if (dict.ContainsKey(key))
-        //		{
-        //			$"duplicate: {key}".Dump();
-        //			dict[key]++;
-        //		}
-        //		else
-        //		{
-        //			dict[key] = 1;
-        //		}
-        //	}
-        //	var g = dict.OrderByDescending(x => x.Value).ToArray();
-        //	var isDup = g.Any(x => x.Value > 1);
-        //	if (isDup)
-        //	{
-        //		File.WriteAllLines("d:\\test.log", g.Where(x => x.Value > 1).Select(x => $"{x.Key} => {x.Value}"));
-        //	}
-        //}
-	}
+    }
 }
