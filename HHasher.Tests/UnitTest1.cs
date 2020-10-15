@@ -26,6 +26,19 @@ namespace HHasher.Tests
             }
         }
 
+        public static IEnumerable<string[]> PathCaseSensitivityCases
+        {
+            get
+            {
+                yield return new[] { "Test" };
+                yield return new[] { "tEst" };
+                yield return new[] { "Test" };
+                yield return new[] { "teSt" };
+                yield return new[] { "tesT" };
+                yield return new[] { "TEST" };
+            }
+        }
+
         [TestCaseSource(nameof(CreationTestCases))]
         public void Created_Id_Should_Be_Valid_Base64(string[] path)
         {
@@ -40,13 +53,33 @@ namespace HHasher.Tests
         }
 
         [TestCaseSource(nameof(CreationTestCases))]
-        public void Created_Id_Should_Be_Verifiable_ForSamePath(string[] path)
+        public void Created_Id_Should_Be_Verifiable_For_Same_Path(string[] path)
         {
             var sut = new Hasher();
 
             var id = sut.CreateId(path);
 
             Assert.That(sut.ValidateId(id, path), Is.True);
+        }
+
+        [TestCaseSource(nameof(PathCaseSensitivityCases))]
+        public void Created_Id_Should_Be_Case_Sensitive(string[] path)
+        {
+            var sut = new Hasher();
+
+            var id = sut.CreateId("path");
+
+            Assert.That(sut.ValidateId(id, path), Is.False);
+        }
+
+        [TestCaseSource(nameof(CreationTestCases))]
+        public void Created_Id_Should_Be_Not_Be_Verifiable_For_Different_Path(string[] path)
+        {
+            var sut = new Hasher();
+
+            var id = sut.CreateId("path");
+
+            Assert.That(sut.ValidateId(id, path), Is.False);
         }
     }
 }
