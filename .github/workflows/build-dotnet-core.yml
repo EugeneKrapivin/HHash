@@ -5,8 +5,7 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
-jobs:
+env:
   # Stop wasting time caching packages
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   # Disable sending usage data to Microsoft
@@ -20,14 +19,12 @@ jobs:
   # Official NuGet Feed settings
   NUGET_FEED: https://api.nuget.org/v3/index.json
   NUGET_KEY: ${{ secrets.NUGET_KEY }}
-
+jobs:
   build:
-    
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
-
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
