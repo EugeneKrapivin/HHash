@@ -84,9 +84,9 @@ namespace HHasher.Tests
         [TestCase(10_000)]
         [TestCase(100_000)]
         [TestCase(1_000_000)]
-        [TestCase(10_000_000), Category("long running")]
-        [TestCase(20_000_000), Category("long running")]
-        [TestCase(40_000_000), Category("long running")]
+        [TestCase(10_000_000, Explicit = true), Category("long running")]
+        [TestCase(20_000_000, Explicit = true), Category("long running")]
+        [TestCase(40_000_000, Explicit = true), Category("long running")]
         [TestCase(100_000_000, Explicit = true), Category("long running")]
         public void Created_Id_Should_Be_Unique_With_High_Probability(int limit)
         {
